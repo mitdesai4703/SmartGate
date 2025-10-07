@@ -17,9 +17,13 @@ const app = express();
 
 
 app.use(cors({
-  origin: "https://smart-gate-i7icl3rkt-mit-desais-projects.vercel.app",
+  origin: [
+    "https://smart-gate-i7icl3rkt-mit-desais-projects.vercel.app",
+    "https://smart-gate-smoky.vercel.app"
+  ],
   credentials: true
 }));
+
 
 app.use(express.json());
 app.use('/api/auth',authRouter)
