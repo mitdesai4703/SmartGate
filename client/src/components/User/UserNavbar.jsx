@@ -1,16 +1,44 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FaBars,
   FaTimes,
   FaTools,
   FaFileAlt,
-  FaUserShield
+  FaUserShield,
+  FaSignOutAlt,
 } from "react-icons/fa";
 
 const UserNavbar = () => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    // Fetch user from localStorage or context
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+    navigate("/");
+  };
 
   const navLinks = [
     { name: "Home", path: "/" },
@@ -42,7 +70,7 @@ const UserNavbar = () => {
               </button>
             ))}
 
-            {/* Admin Login Button */}
+            {/* Admin Login */}
             <button
               onClick={() => navigate("/admin/login")}
               className="flex items-center gap-1 hover:text-green-400 transition-colors font-medium"
@@ -50,13 +78,38 @@ const UserNavbar = () => {
               <FaUserShield /> Admin
             </button>
 
-            {/* User Login Button */}
-            <button
-              onClick={() => navigate("/login")}
-              className="bg-green-400 hover:bg-green-300 text-gray-900 font-semibold px-4 py-2 rounded-lg transition-colors"
-            >
-              Login
-            </button>
+            {/* Conditional User/Login */}
+            {user ? (
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                  className="bg-green-500 text-white font-semibold w-10 h-10 rounded-full flex items-center justify-center text-lg uppercase hover:bg-green-400 transition"
+                >
+                  {user.name?.charAt(0) || "U"}
+                </button>
+
+                {dropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-40 bg-white text-gray-800 rounded-lg shadow-lg overflow-hidden">
+                    <div className="px-4 py-2 font-medium border-b">
+                      {user.name}
+                    </div>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full flex items-center gap-2 px-4 py-2 hover:bg-gray-100"
+                    >
+                      <FaSignOutAlt /> Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={() => navigate("/login")}
+                className="bg-green-400 hover:bg-green-300 text-gray-900 font-semibold px-4 py-2 rounded-lg transition-colors"
+              >
+                Login
+              </button>
+            )}
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -95,16 +148,36 @@ const UserNavbar = () => {
             <FaUserShield /> Admin
           </button>
 
-          {/* User Login (Mobile) */}
-          <button
-            onClick={() => {
-              navigate("/login");
-              setMenuOpen(false);
-            }}
-            className="w-full text-left bg-green-400 hover:bg-green-300 text-gray-900 font-semibold px-4 py-2 rounded-lg"
-          >
-            Login
-          </button>
+          {/* User Section (Mobile) */}
+          {user ? (
+            <div className="border-t border-gray-700 pt-3">
+              <div className="flex items-center gap-3 text-white px-4">
+                <div className="bg-green-500 w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg uppercase">
+                  {user.name?.charAt(0) || "U"}
+                </div>
+                <span>{user.name}</span>
+              </div>
+              <button
+                onClick={() => {
+                  handleLogout();
+                  setMenuOpen(false);
+                }}
+                className="w-full text-left text-white px-4 py-2 rounded hover:bg-gray-700 flex items-center gap-2"
+              >
+                <FaSignOutAlt /> Logout
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => {
+                navigate("/login");
+                setMenuOpen(false);
+              }}
+              className="w-full text-left bg-green-400 hover:bg-green-300 text-gray-900 font-semibold px-4 py-2 rounded-lg"
+            >
+              Login
+            </button>
+          )}
         </div>
       )}
     </nav>

@@ -1,8 +1,19 @@
 import React from "react";
 import Sidebar from "../components/Sidebar";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 
-const Layout = ({ children }) => {
+const Layout = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // 🧹 Clear stored data (adjust as needed)
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+
+    // 🔁 Redirect to home (login) page
+    navigate("/");
+  };
+
   return (
     <div className="flex">
       <Sidebar />
@@ -11,11 +22,16 @@ const Layout = ({ children }) => {
           <h1 className="text-lg font-semibold">
             Welcome to <span className="text-green-400">SmartGate</span>
           </h1>
-          <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg">
+          <button
+            onClick={handleLogout}
+            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition"
+          >
             Logout
           </button>
         </header>
-        <div className="p-6"><Outlet/></div>
+        <div className="p-6">
+          <Outlet />
+        </div>
       </main>
     </div>
   );
