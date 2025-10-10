@@ -21,7 +21,7 @@ app.use(cors({
   origin: [
     "https://smart-gate-i7icl3rkt-mit-desais-projects.vercel.app",
     "https://smart-gate-smoky.vercel.app",
-    "http://localhost:5173/"
+    "http://localhost:5173"
   ],
   credentials: true
 }));

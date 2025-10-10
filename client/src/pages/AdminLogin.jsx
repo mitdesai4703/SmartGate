@@ -14,7 +14,7 @@ const AdminLogin = () => {
       if (data.success) {
         toast.success("Welcome back, Admin 👑");
         setIsAdmin(true);
-        navigate("/admin");
+        navigate("/dashboard");
       } else {
         toast.error(data.message);
       }
@@ -24,7 +24,7 @@ const AdminLogin = () => {
   };
 
   useEffect(() => {
-    if (isAdmin) navigate("/admin");
+    if (isAdmin) navigate("/dashboard");
   }, [isAdmin]);
 
   return (
