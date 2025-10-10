@@ -12,9 +12,10 @@ const AdminLogin = () => {
     try {
       const { data } = await axios.post("/api/admin/login", { email, password });
       if (data.success) {
-        toast.success("Welcome back, Admin 👑");
+        toast.success("Welcome back, Admin ");
         setIsAdmin(true);
-        navigate("/dashboard");
+        localStorage.setItem("isAdmin", "true");
+         navigate("/admin/dashboard"); 
       } else {
         toast.error(data.message);
       }
@@ -24,7 +25,7 @@ const AdminLogin = () => {
   };
 
   useEffect(() => {
-    if (isAdmin) navigate("/dashboard");
+    if (isAdmin)  navigate("/admin/dashboard"); 
   }, [isAdmin]);
 
   return (

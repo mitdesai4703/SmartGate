@@ -10,7 +10,10 @@ export const AppContext = createContext();
 export const AppContextProvider = ({ children }) => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
-  const [isAdmin, setIsAdmin] = useState(false);
+ const [isAdmin, setIsAdmin] = useState(() => {
+  return localStorage.getItem("isAdmin") === "true";
+});
+
   const [showUserLogin, setShowUserLogin] = useState(false);
 
   // Check if user is authenticated
@@ -28,14 +31,22 @@ export const AppContextProvider = ({ children }) => {
   };
 
   // Check if admin is authenticated
-  const fetchAdmin = async () => {
-    try {
-      const { data } = await axios.get('/api/admin/is-auth');
-      setIsAdmin(data.success || false);
-    } catch (error) {
+ const fetchAdmin = async () => {
+  try {
+    const { data } = await axios.get('/api/admin/is-auth');
+    if (data.success) {
+      setIsAdmin(true);
+      localStorage.setItem("isAdmin", "true");
+    } else {
       setIsAdmin(false);
+      localStorage.removeItem("isAdmin");
     }
-  };
+  } catch (error) {
+    setIsAdmin(false);
+    localStorage.removeItem("isAdmin");
+  }
+};
+
 
   useEffect(() => {
     fetchUser();
