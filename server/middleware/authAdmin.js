@@ -1,23 +1,23 @@
 import jwt from 'jsonwebtoken';
 
-const authAdmin = async (req, res, next) =>{
+const authAdmin = (req, res, next) => {
     const { adminToken } = req.cookies;
 
-    if(!adminToken) {
-        return res.json({ success: false, message: 'Not Authorized' });
+    if (!adminToken) {
+        return res.status(401).json({ success: false, message: 'Not Authorized' });
     }
 
     try {
-            const tokenDecode = jwt.verify(adminToken, process.env.JWT_SECRET)
-            if(tokenDecode.email === process.env.ADMIN_EMAIL){
-                next();
-            }else{
-                return res.json({ success: false, message: 'Not Authorized' });
-            }
-            
-        } catch (error) {
-            res.json({ success: false, message: error.message });
+        const decoded = jwt.verify(adminToken, process.env.JWT_SECRET);
+        if (decoded.email === process.env.ADMIN_EMAIL) {
+            req.admin = decoded; 
+            next();
+        } else {
+            return res.status(401).json({ success: false, message: 'Not Authorized' });
         }
-}
+    } catch (error) {
+        return res.status(401).json({ success: false, message: 'Token expired or invalid' });
+    }
+};
 
 export default authAdmin;

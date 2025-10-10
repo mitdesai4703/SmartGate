@@ -10,48 +10,32 @@ export const AppContext = createContext();
 export const AppContextProvider = ({ children }) => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
- const [isAdmin, setIsAdmin] = useState(() => {
-  return localStorage.getItem("isAdmin") === "true";
-});
+  const [isAdmin, setIsAdmin] = useState(() => {
+    return localStorage.getItem("isAdmin") === "true";
+  });
+  const [loading, setLoading] = useState(true);
 
-  const [showUserLogin, setShowUserLogin] = useState(false);
-
-  // Check if user is authenticated
-  const fetchUser = async () => {
-    try {
-      const { data } = await axios.get('/api/user/is-auth', { withCredentials: true });
-      if (data.success) {
-        setUser(data.user);
-      } else {
-        setUser(null);
-      }
-    } catch (error) {
-      setUser(null);
-    }
-  };
-
-  // Check if admin is authenticated
  const fetchAdmin = async () => {
-  try {
-    const { data } = await axios.get('/api/admin/is-auth');
-    if (data.success) {
-      setIsAdmin(true);
-      localStorage.setItem("isAdmin", "true");
-    } else {
-      setIsAdmin(false);
-      localStorage.removeItem("isAdmin");
+    try {
+        const { data } = await axios.get("/api/admin/is-auth", { withCredentials: true });
+        if (data.success) {
+            setIsAdmin(true);
+            localStorage.setItem("isAdmin", "true");
+        } else {
+            setIsAdmin(false);
+            localStorage.removeItem("isAdmin");
+        }
+    } catch (error) {
+        setIsAdmin(false);
+        localStorage.removeItem("isAdmin");
+    } finally {
+        setLoading(false);
     }
-  } catch (error) {
-    setIsAdmin(false);
-    localStorage.removeItem("isAdmin");
-  }
 };
 
-
-  useEffect(() => {
-    fetchUser();
+useEffect(() => {
     fetchAdmin();
-  }, []);
+}, []);
 
   const value = {
     navigate,
@@ -59,9 +43,8 @@ export const AppContextProvider = ({ children }) => {
     setUser,
     isAdmin,
     setIsAdmin,
-    showUserLogin,
-    setShowUserLogin,
-    axios
+    loading,
+    axios,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

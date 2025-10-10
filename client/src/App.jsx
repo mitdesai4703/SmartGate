@@ -31,7 +31,7 @@ function AppWrapper() {
     location.pathname.startsWith(path)
   );
 
-  const { isAdmin } = useAppContext();
+  const { isAdmin,loading } = useAppContext();
 
   return (
     <div className="text-default min-h-screen text-gray-700 w-screen overflow-x-hidden">
@@ -56,10 +56,22 @@ function AppWrapper() {
 
           <Route path="/admin/login" element={<AdminLogin />} />
 
-          <Route
-            path="/admin"
-            element={isAdmin ? <AdminLayout /> : <Navigate to="/login" />}
-          >
+          const { isAdmin, loading } = useAppContext();
+
+<Route
+  path="/admin/*"
+  element={
+    loading ? (
+      <div className="text-center text-white mt-20">Checking authentication...</div>
+    ) : isAdmin ? (
+      <AdminLayout />
+    ) : (
+      <Navigate to="/admin/login" replace />
+    )
+  }
+>
+
+
             <Route index element={<AdminDashboard />} />
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="visitor-management" element={<VisitorManagement />} />
