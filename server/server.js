@@ -2,7 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import connectDB from './config/db.js'; 
-import authRouter from "./routes/auth.js"
+import userRouter from "./routes/userRoute.js";
+import adminRouter from "./routes/adminRoute.js";
 import taskRouter from "./routes/taskRoutes.js"
 import documentRouter from "./routes/documentRoutes.js"
 import visitorRouter from "./routes/visitorRoutes.js";
@@ -19,14 +20,16 @@ const app = express();
 app.use(cors({
   origin: [
     "https://smart-gate-i7icl3rkt-mit-desais-projects.vercel.app",
-    "https://smart-gate-smoky.vercel.app"
+    "https://smart-gate-smoky.vercel.app",
+    "http://localhost:5173/"
   ],
   credentials: true
 }));
 
 
 app.use(express.json());
-app.use('/api/auth',authRouter)
+app.use("/api/user", userRouter);
+app.use("/api/admin", adminRouter);
 app.use('/api/tasks',taskRouter);
 app.use("/uploads", express.static("uploads"));
 app.use('/api/documents',documentRouter);

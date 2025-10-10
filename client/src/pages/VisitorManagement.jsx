@@ -81,30 +81,28 @@ const VisitorManagement = () => {
   );
 
   return (
-    <div className="p-8 bg-gray-100 min-h-screen">
-     
-      <div className="flex flex-col md:flex-row justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">Visitor Management</h1>
-
-      
-        <div className="flex flex-col md:flex-row gap-4 mt-4 md:mt-0">
+    <div className="p-4 sm:p-6 md:p-8 bg-gray-100 min-h-screen">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4 md:gap-0">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Visitor Management</h1>
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 w-full md:w-auto">
           <input
             type="text"
-            placeholder=" Search visitors..."
+            placeholder="Search visitors..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="border border-gray-300 rounded-lg p-3 w-full md:w-64 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="border border-gray-300 rounded-lg p-2 sm:p-3 w-full md:w-64 focus:outline-none focus:ring-2 focus:ring-teal-500"
           />
           <button
             onClick={() => setShowModal(true)}
-            className="bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-lg font-semibold flex items-center gap-2 transition-all"
+            className="bg-teal-600 hover:bg-teal-700 text-white py-2 sm:py-3 px-4 sm:px-6 rounded-lg font-semibold flex items-center justify-center gap-2 w-full sm:w-auto"
           >
             <FaUserPlus /> Log New Visitor
           </button>
         </div>
       </div>
 
-     
+      {/* Table */}
       <div className="overflow-x-auto bg-white shadow-lg rounded-xl">
         <table className="min-w-full divide-y divide-gray-200 text-sm">
           <thead className="bg-gray-50">
@@ -124,7 +122,7 @@ const VisitorManagement = () => {
               ].map((header) => (
                 <th
                   key={header}
-                  className="px-4 py-3 text-left font-semibold text-gray-700"
+                  className="px-3 sm:px-4 py-2 text-left font-semibold text-gray-700 whitespace-nowrap"
                 >
                   {header}
                 </th>
@@ -147,40 +145,38 @@ const VisitorManagement = () => {
                   key={v._id}
                   className="hover:bg-gray-50 transition-colors duration-200"
                 >
-                  <td className="px-4 py-2 text-gray-800">{v.name}</td>
-                  <td className="px-4 py-2">{v.resident}</td>
-                  <td className="px-4 py-2">{v.houseNo}</td>
-                  <td className="px-4 py-2">{v.contactNumber || "-"}</td>
-                  <td className="px-4 py-2">{v.noOfPersons}</td>
-                  <td className="px-4 py-2">{v.purpose || "-"}</td>
-                  <td className="px-4 py-2">{v.remarks || "-"}</td>
-                  <td className="px-4 py-2 text-gray-600">
+                  <td className="px-2 sm:px-4 py-2">{v.name}</td>
+                  <td className="px-2 sm:px-4 py-2">{v.resident}</td>
+                  <td className="px-2 sm:px-4 py-2">{v.houseNo}</td>
+                  <td className="px-2 sm:px-4 py-2">{v.contactNumber || "-"}</td>
+                  <td className="px-2 sm:px-4 py-2">{v.noOfPersons}</td>
+                  <td className="px-2 sm:px-4 py-2">{v.purpose || "-"}</td>
+                  <td className="px-2 sm:px-4 py-2">{v.remarks || "-"}</td>
+                  <td className="px-2 sm:px-4 py-2 text-gray-600">
                     {new Date(v.entryTime).toLocaleString()}
                   </td>
-                  <td className="px-4 py-2 text-gray-600">
+                  <td className="px-2 sm:px-4 py-2 text-gray-600">
                     {v.exitTime ? new Date(v.exitTime).toLocaleString() : "-"}
                   </td>
                   <td
-                    className={`px-4 py-2 font-semibold ${
-                      v.status === "Checked In"
-                        ? "text-green-600"
-                        : "text-gray-600"
+                    className={`px-2 sm:px-4 py-2 font-semibold whitespace-nowrap ${
+                      v.status === "Checked In" ? "text-green-600" : "text-gray-600"
                     }`}
                   >
                     {v.status}
                   </td>
-                  <td className="px-4 py-2 flex gap-2">
+                  <td className="px-2 sm:px-4 py-2 flex flex-col sm:flex-row gap-2">
                     {v.status === "Checked In" && (
                       <button
                         onClick={() => updateStatus(v._id, "Checked Out")}
-                        className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-xs flex items-center gap-1"
+                        className="bg-green-500 hover:bg-green-600 text-white px-2 sm:px-3 py-1 rounded text-xs flex items-center justify-center gap-1"
                       >
                         <FaSignOutAlt /> Check Out
                       </button>
                     )}
                     <button
                       onClick={() => deleteVisitor(v._id)}
-                      className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs flex items-center gap-1"
+                      className="bg-red-500 hover:bg-red-600 text-white px-2 sm:px-3 py-1 rounded text-xs flex items-center justify-center gap-1"
                     >
                       <FaTrashAlt /> Delete
                     </button>
@@ -192,17 +188,17 @@ const VisitorManagement = () => {
         </table>
       </div>
 
-     
+      {/* Modal */}
       <AnimatePresence>
         {showModal && (
           <motion.div
-            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
             <motion.div
-              className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-lg relative"
+              className="bg-white rounded-2xl shadow-2xl w-full max-w-md sm:max-w-lg p-4 sm:p-6 relative"
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
@@ -213,10 +209,10 @@ const VisitorManagement = () => {
               >
                 <FaTimes size={20} />
               </button>
-              <h2 className="text-2xl font-bold text-gray-800 mb-6">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6">
                 Log New Visitor
               </h2>
-              <form onSubmit={handleSubmit} className="grid gap-4">
+              <form onSubmit={handleSubmit} className="grid gap-3 sm:gap-4">
                 <input
                   type="text"
                   name="name"
@@ -224,7 +220,7 @@ const VisitorManagement = () => {
                   value={formData.name}
                   onChange={handleChange}
                   required
-                  className="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none"
+                  className="border border-gray-300 p-2 sm:p-3 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none w-full"
                 />
                 <input
                   type="text"
@@ -233,7 +229,7 @@ const VisitorManagement = () => {
                   value={formData.resident}
                   onChange={handleChange}
                   required
-                  className="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none"
+                  className="border border-gray-300 p-2 sm:p-3 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none w-full"
                 />
                 <input
                   type="text"
@@ -242,7 +238,7 @@ const VisitorManagement = () => {
                   value={formData.houseNo}
                   onChange={handleChange}
                   required
-                  className="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none"
+                  className="border border-gray-300 p-2 sm:p-3 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none w-full"
                 />
                 <input
                   type="text"
@@ -250,7 +246,7 @@ const VisitorManagement = () => {
                   placeholder="Contact Number"
                   value={formData.contactNumber}
                   onChange={handleChange}
-                  className="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none"
+                  className="border border-gray-300 p-2 sm:p-3 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none w-full"
                 />
                 <input
                   type="number"
@@ -259,7 +255,7 @@ const VisitorManagement = () => {
                   value={formData.noOfPersons}
                   onChange={handleChange}
                   min="1"
-                  className="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none"
+                  className="border border-gray-300 p-2 sm:p-3 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none w-full"
                 />
                 <input
                   type="text"
@@ -267,18 +263,18 @@ const VisitorManagement = () => {
                   placeholder="Purpose"
                   value={formData.purpose}
                   onChange={handleChange}
-                  className="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none"
+                  className="border border-gray-300 p-2 sm:p-3 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none w-full"
                 />
                 <textarea
                   name="remarks"
                   placeholder="Remarks"
                   value={formData.remarks}
                   onChange={handleChange}
-                  className="border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none"
+                  className="border border-gray-300 p-2 sm:p-3 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none w-full"
                 />
                 <button
                   type="submit"
-                  className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3 rounded-lg font-semibold transition-all"
+                  className="w-full bg-teal-600 hover:bg-teal-700 text-white py-2 sm:py-3 rounded-lg font-semibold transition-all"
                 >
                   Save Visitor
                 </button>

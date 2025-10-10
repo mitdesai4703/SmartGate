@@ -1,35 +1,31 @@
-import React, { useState } from 'react';
-import { useAppContext } from '../context/AppContext';
-import toast from 'react-hot-toast';
+import React, { useState, useEffect } from "react";
+import { useAppContext } from "../../src/context/AppContext";
+import toast from "react-hot-toast";
 
-const Login = () => {
-  const { setUser, axios, navigate } = useAppContext();
-  const [state, setState] = useState("login");
-  const [name, setName] = useState("");
+const AdminLogin = () => {
+  const { isAdmin, setIsAdmin, navigate, axios } = useAppContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const onSubmitHandler = async (event) => {
-    event.preventDefault();
+  const onSubmitHandler = async (e) => {
+    e.preventDefault();
     try {
-      const { data } = await axios.post(
-        `/api/user/${state}`,
-        { name, email, password },
-        { withCredentials: true }
-      );
-
+      const { data } = await axios.post("/api/admin/login", { email, password });
       if (data.success) {
-        setUser(data.user);
-        localStorage.setItem("user", JSON.stringify(data.user));
-        toast.success(`${state === "login" ? "Logged in" : "Account created"} successfully`);
-        navigate("/");
+        toast.success("Welcome back, Admin 👑");
+        setIsAdmin(true);
+        navigate("/admin");
       } else {
         toast.error(data.message);
       }
-    } catch (error) {
-      toast.error(error.message);
+    } catch (err) {
+      toast.error("Invalid credentials or server issue");
     }
   };
+
+  useEffect(() => {
+    if (isAdmin) navigate("/admin");
+  }, [isAdmin]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-900 px-4">
@@ -38,30 +34,14 @@ const Login = () => {
         className="bg-white/10 backdrop-blur-md border border-white/20 p-10 rounded-3xl shadow-xl w-full max-w-md"
       >
         <h2 className="text-3xl font-bold text-white mb-8 text-center">
-          {state === "login" ? "User Login" : "Create Account"}
+          Admin Login
         </h2>
-
-        {state === "register" && (
-          <div className="relative mb-6">
-            <input
-              type="text"
-              placeholder=" "
-              required
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="peer w-full px-4 py-3 rounded-lg bg-white/20 text-white placeholder-transparent outline-none focus:ring-2 focus:ring-green-500"
-            />
-            <label className="absolute left-4 top-3 text-white/70 text-sm peer-placeholder-shown:top-3 peer-placeholder-shown:text-white/50 peer-focus:top-[-8px] peer-focus:text-green-400 peer-focus:text-xs transition-all">
-              Full Name
-            </label>
-          </div>
-        )}
 
         <div className="relative mb-6">
           <input
             type="email"
-            placeholder=" "
             required
+            placeholder=" "
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="peer w-full px-4 py-3 rounded-lg bg-white/20 text-white placeholder-transparent outline-none focus:ring-2 focus:ring-green-500"
@@ -74,8 +54,8 @@ const Login = () => {
         <div className="relative mb-6">
           <input
             type="password"
-            placeholder=" "
             required
+            placeholder=" "
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="peer w-full px-4 py-3 rounded-lg bg-white/20 text-white placeholder-transparent outline-none focus:ring-2 focus:ring-green-500"
@@ -86,16 +66,16 @@ const Login = () => {
         </div>
 
         <button className="w-full py-3 bg-green-600 rounded-xl text-white font-semibold hover:bg-green-500 transition">
-          {state === "login" ? "Login" : "Sign Up"}
+          Login
         </button>
 
         <p className="text-center text-white/70 mt-6 text-sm">
-          {state === "login" ? "Don't have an account?" : "Already have an account?"}{" "}
+          Need help?{" "}
           <span
-            onClick={() => setState(state === "login" ? "register" : "login")}
+            onClick={() => toast("Contact system administrator")}
             className="text-green-400 cursor-pointer underline"
           >
-            {state === "login" ? "Sign Up" : "Login here"}
+            Support
           </span>
         </p>
       </form>
@@ -103,4 +83,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default AdminLogin;

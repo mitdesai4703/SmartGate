@@ -4,16 +4,16 @@ import { FaUsers, FaTools, FaFileAlt, FaClock } from "react-icons/fa";
 
 const DashboardCard = ({ title, value, icon, description, bgColor }) => (
   <div
-    className={`flex items-center justify-between p-6 rounded-xl shadow-md ${bgColor}`}
+    className={`flex flex-col sm:flex-row items-start sm:items-center justify-between p-6 rounded-xl shadow-md ${bgColor} transition-all`}
   >
-    <div>
+    <div className="mb-4 sm:mb-0">
       <h2 className="text-lg font-semibold text-gray-700">{title}</h2>
       <p className="text-2xl font-bold text-gray-900 mt-2">{value}</p>
       {description && (
         <p className="text-sm text-gray-500 mt-1">{description}</p>
       )}
     </div>
-    <div className="text-4xl">{icon}</div>
+    <div className="text-4xl sm:ml-4 self-end sm:self-auto">{icon}</div>
   </div>
 );
 
@@ -28,9 +28,7 @@ const AdminDashboard = () => {
       const res = await axios.get(
         `${import.meta.env.VITE_BACKEND_URL}/api/visitors`
       );
-
       const visitors = res.data;
-
       const today = new Date();
       const countToday = visitors.filter((v) => {
         const entryDate = new Date(v.entryTime);
@@ -82,10 +80,12 @@ const AdminDashboard = () => {
   }, []);
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
-      <h1 className="text-3xl font-bold text-gray-800 mb-8">Admin Dashboard</h1>
+    <div className="p-4 sm:p-8 bg-gray-50 min-h-screen">
+      <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 sm:mb-8">
+        Admin Dashboard
+      </h1>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
         <DashboardCard
           title="Visitors Today"
           value={visitorsToday}
@@ -109,50 +109,52 @@ const AdminDashboard = () => {
         />
       </div>
 
-      <div className="bg-white shadow rounded-xl p-6 mb-8">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">
-          Recent Visitors
-        </h2>
-        {recentVisitors.length === 0 ? (
-          <p className="text-gray-500">No visitors logged yet.</p>
-        ) : (
-          <ul className="divide-y divide-gray-200">
-            {recentVisitors.map((v) => (
-              <li key={v._id} className="flex justify-between py-2">
-                <div>
-                  <p className="font-medium text-gray-700">{v.name}</p>
-                  <p className="text-gray-500 text-sm">
-                    {v.resident} | House {v.houseNo}
-                  </p>
-                </div>
-                <div className="text-gray-500 text-sm">
-                  {new Date(v.entryTime).toLocaleString()}
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="bg-white shadow rounded-xl p-4 sm:p-6">
+          <h2 className="text-xl font-semibold text-gray-800 mb-3">
+            Recent Visitors
+          </h2>
+          {recentVisitors.length === 0 ? (
+            <p className="text-gray-500">No visitors logged yet.</p>
+          ) : (
+            <ul className="divide-y divide-gray-200">
+              {recentVisitors.map((v) => (
+                <li key={v._id} className="flex flex-col sm:flex-row justify-between py-2">
+                  <div>
+                    <p className="font-medium text-gray-700">{v.name}</p>
+                    <p className="text-gray-500 text-sm">
+                      {v.resident} | House {v.houseNo}
+                    </p>
+                  </div>
+                  <div className="text-gray-500 text-sm mt-1 sm:mt-0">
+                    {new Date(v.entryTime).toLocaleString()}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
 
-      <div className="bg-white shadow rounded-xl p-6">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">
-          Pending Maintenance
-        </h2>
-        {pendingMaintenance.length === 0 ? (
-          <p className="text-gray-500">No pending maintenance tasks.</p>
-        ) : (
-          <ul className="divide-y divide-gray-200">
-            {pendingMaintenance.map((t, index) => (
-              <li key={index} className="flex justify-between py-2">
-                <p className="text-gray-700">{t.task || t.name}</p>
-                <p className="text-gray-500 text-sm">
-                  <FaClock className="inline mr-1" />
-                  {new Date(t.createdAt).toLocaleDateString()}
-                </p>
-              </li>
-            ))}
-          </ul>
-        )}
+        <div className="bg-white shadow rounded-xl p-4 sm:p-6">
+          <h2 className="text-xl font-semibold text-gray-800 mb-3">
+            Pending Maintenance
+          </h2>
+          {pendingMaintenance.length === 0 ? (
+            <p className="text-gray-500">No pending maintenance tasks.</p>
+          ) : (
+            <ul className="divide-y divide-gray-200">
+              {pendingMaintenance.map((t, index) => (
+                <li key={index} className="flex flex-col sm:flex-row justify-between py-2">
+                  <p className="text-gray-700">{t.task || t.name}</p>
+                  <p className="text-gray-500 text-sm mt-1 sm:mt-0 flex items-center">
+                    <FaClock className="inline mr-1" />
+                    {new Date(t.createdAt).toLocaleDateString()}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -1,91 +1,86 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  useLocation,
+  Navigate,
+} from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import { AppContextProvider, useAppContext } from "./context/AppContext";
+
+import UserNavbar from "./components/User/UserNavbar";
+import Footer from "./components/Footer";
+
+import Home from "./pages/Home";
 import Login from "./pages/Login";
+import UserMaintenance from "./pages/User/UserMaintenance";
+import UserDocuments from "./pages/User/UserDocuments";
+import AdminLogin from "./pages/AdminLogin";
+
 import AdminDashboard from "./pages/AdminDashboard";
 import VisitorManagement from "./pages/VisitorManagement";
 import Maintenance from "./pages/Maintenance";
 import Documents from "./pages/Documents";
 import AdminPortal from "./pages/AdminPortal";
-import ProtectedRoute from "./components/ProtectedRoute";
-import AuthProvider from "./context/authContext";
-import Layout from "./pages/Layout";
-import Resident from "../src/pages/Resident";
+import Resident from "./pages/Resident";
+import AdminLayout from "./pages/Layout";
+
+function AppWrapper() {
+  const location = useLocation();
+  const isHiddenLayoutPath = ["/admin", "/login"].some((path) =>
+    location.pathname.startsWith(path)
+  );
+
+  const { isAdmin } = useAppContext();
+
+  return (
+    <div className="text-default min-h-screen text-gray-700 w-screen overflow-x-hidden">
+      {!isHiddenLayoutPath && <UserNavbar />}
+
+      <Toaster />
+
+      <div
+        className={`w-full ${
+          !["/admin", "/login"].some((path) =>
+            location.pathname.startsWith(path)
+          )
+            ? "pt-20"
+            : ""
+        }`}
+      >
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/user-maintenance" element={<UserMaintenance />} />
+          <Route path="/user-documents" element={<UserDocuments />} />
+
+          <Route path="/admin/login" element={<AdminLogin />} />
+
+          <Route
+            path="/admin"
+            element={isAdmin ? <AdminLayout /> : <Navigate to="/login" />}
+          >
+            <Route index element={<AdminDashboard />} />
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="visitor-management" element={<VisitorManagement />} />
+            <Route path="maintenance" element={<Maintenance />} />
+            <Route path="documents" element={<Documents />} />
+            <Route path="admin-portal" element={<AdminPortal />} />
+            <Route path="residents" element={<Resident />} />
+          </Route>
+        </Routes>
+      </div>
+
+      {!isHiddenLayoutPath && <Footer />}
+    </div>
+  );
+}
 
 function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Navigate to="/admin-dashboard" />} />
-          <Route path="/login" element={<Login />} />
-
-          <Route
-            path="/admin-dashboard"
-            element={
-              <ProtectedRoute>
-                <Layout>
-                  <AdminDashboard />
-                </Layout>
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/visitor-management"
-            element={
-              <ProtectedRoute>
-                <Layout>
-                  <VisitorManagement />
-                </Layout>
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/maintenance"
-            element={
-              <ProtectedRoute>
-                <Layout>
-                  <Maintenance />
-                </Layout>
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/documents"
-            element={
-              <ProtectedRoute>
-                <Layout>
-                  <Documents />
-                </Layout>
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/admin-portal"
-            element={
-              <ProtectedRoute>
-                <Layout>
-                  <AdminPortal />
-                </Layout>
-              </ProtectedRoute>
-            }
-          />
-
-           <Route
-            path="/residents"
-            element={
-              <ProtectedRoute>
-                <Layout>
-                  <Resident/>
-                </Layout>
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+    <AppContextProvider>
+      <AppWrapper />
+    </AppContextProvider>
   );
 }
 
