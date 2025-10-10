@@ -1,15 +1,22 @@
 import React from "react";
 import Sidebar from "../components/Sidebar";
-import Navbar from "../components/Navbar";
+import { Outlet } from "react-router-dom";
 
 const Layout = ({ children }) => {
   return (
-    <div className="flex min-h-screen">
+    <div className="flex">
       <Sidebar />
-      <div className="flex-1 flex flex-col">
-        <Navbar />
-        <main className="flex-1 bg-gray-100 p-6 overflow-auto">{children}</main>
-      </div>
+      <main className="flex-1 ml-64 bg-gray-50 min-h-screen">
+        <header className="flex justify-between items-center bg-[#0f172a] text-white px-6 py-4 shadow">
+          <h1 className="text-lg font-semibold">
+            Welcome to <span className="text-green-400">SmartGate</span>
+          </h1>
+          <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg">
+            Logout
+          </button>
+        </header>
+        <div className="p-6"><Outlet/></div>
+      </main>
     </div>
   );
 };

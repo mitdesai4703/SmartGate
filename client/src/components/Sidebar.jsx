@@ -7,7 +7,7 @@ import {
   FaFileAlt,
   FaUserShield,
   FaBars,
-  FaTimes
+  FaTimes,
 } from "react-icons/fa";
 
 const Sidebar = () => {
@@ -15,7 +15,7 @@ const Sidebar = () => {
 
   return (
     <>
-      {/* Mobile Hamburger */}
+      {/* Mobile Header */}
       <div className="md:hidden flex items-center justify-between bg-gray-800 text-white p-4">
         <h3 className="text-xl font-bold">SmartGate</h3>
         <button onClick={() => setIsOpen(!isOpen)}>
@@ -29,20 +29,18 @@ const Sidebar = () => {
           fixed top-0 left-0 h-full bg-gray-800 text-white p-5 
           w-64 md:w-64 z-50 transform 
           ${isOpen ? "translate-x-0" : "-translate-x-full"} 
-          transition-transform duration-300 ease-in-out
+          md:translate-x-0 transition-transform duration-300 ease-in-out
         `}
       >
-        {/* Logo */}
         <div className="mb-10 md:block hidden">
           <h3 className="text-2xl font-bold text-center">SmartGate</h3>
         </div>
 
-        {/* Navigation */}
         <nav className="flex flex-col gap-4">
           <NavLink
-            to="/admin-dashboard"
+            to="/admin/dashboard"
             className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-2 rounded hover:bg-gray-700 transition-colors ${
+              `flex items-center gap-3 px-4 py-2 rounded hover:bg-gray-700 ${
                 isActive ? "bg-gray-700" : ""
               }`
             }
@@ -53,9 +51,9 @@ const Sidebar = () => {
           </NavLink>
 
           <NavLink
-            to="/visitor-management"
+            to="/admin/visitor-management"
             className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-2 rounded hover:bg-gray-700 transition-colors ${
+              `flex items-center gap-3 px-4 py-2 rounded hover:bg-gray-700 ${
                 isActive ? "bg-gray-700" : ""
               }`
             }
@@ -66,9 +64,9 @@ const Sidebar = () => {
           </NavLink>
 
           <NavLink
-            to="/maintenance"
+            to="/admin/maintenance"
             className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-2 rounded hover:bg-gray-700 transition-colors ${
+              `flex items-center gap-3 px-4 py-2 rounded hover:bg-gray-700 ${
                 isActive ? "bg-gray-700" : ""
               }`
             }
@@ -79,9 +77,9 @@ const Sidebar = () => {
           </NavLink>
 
           <NavLink
-            to="/documents"
+            to="/admin/documents"
             className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-2 rounded hover:bg-gray-700 transition-colors ${
+              `flex items-center gap-3 px-4 py-2 rounded hover:bg-gray-700 ${
                 isActive ? "bg-gray-700" : ""
               }`
             }
@@ -92,9 +90,9 @@ const Sidebar = () => {
           </NavLink>
 
           <NavLink
-            to="/admin-portal"
+            to="/admin/admin-portal"
             className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-2 rounded hover:bg-gray-700 transition-colors ${
+              `flex items-center gap-3 px-4 py-2 rounded hover:bg-gray-700 ${
                 isActive ? "bg-gray-700" : ""
               }`
             }
@@ -106,7 +104,7 @@ const Sidebar = () => {
         </nav>
       </div>
 
-      {/* Overlay */}
+      {/* Overlay for mobile */}
       {isOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-40 md:hidden"
