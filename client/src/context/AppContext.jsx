@@ -10,39 +10,40 @@ export const AppContext = createContext();
 export const AppContextProvider = ({ children }) => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
-  const [isAdmin, setIsAdmin] = useState(() => {
-    return localStorage.getItem("isAdmin") === "true";
-  });
+  const [role, setRole] = useState("user"); // ✅ default user
   const [loading, setLoading] = useState(true);
 
- const fetchAdmin = async () => {
+  // ✅ Check admin authentication
+  const fetchAdmin = async () => {
     try {
-        const { data } = await axios.get("/api/admin/is-auth", { withCredentials: true });
-        if (data.success) {
-            setIsAdmin(true);
-            localStorage.setItem("isAdmin", "true");
-        } else {
-            setIsAdmin(false);
-            localStorage.removeItem("isAdmin");
-        }
+      const { data } = await axios.get("/api/admin/is-auth", { withCredentials: true });
+      if (data.success) {
+        setRole("admin");
+        localStorage.setItem("role", "admin");
+      } else {
+        setRole("user");
+        localStorage.setItem("role", "user");
+      }
     } catch (error) {
-        setIsAdmin(false);
-        localStorage.removeItem("isAdmin");
+      setRole("user");
+      localStorage.setItem("role", "user");
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-};
+  };
 
-useEffect(() => {
+  useEffect(() => {
+    const storedRole = localStorage.getItem("role");
+    if (storedRole) setRole(storedRole);
     fetchAdmin();
-}, []);
+  }, []);
 
   const value = {
     navigate,
     user,
     setUser,
-    isAdmin,
-    setIsAdmin,
+    role,
+    setRole,
     loading,
     axios,
   };

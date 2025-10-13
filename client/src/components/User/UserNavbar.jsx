@@ -8,20 +8,19 @@ import {
   FaUserShield,
   FaSignOutAlt,
 } from "react-icons/fa";
+import { useAppContext } from "../../context/AppContext";
 
 const UserNavbar = () => {
   const navigate = useNavigate();
+  const { role } = useAppContext(); // ✅ access role (user/admin)
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [user, setUser] = useState(null);
   const dropdownRef = useRef(null);
 
   useEffect(() => {
-    // Fetch user from localStorage or context
     const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
+    if (storedUser) setUser(JSON.parse(storedUser));
   }, []);
 
   useEffect(() => {
@@ -50,7 +49,6 @@ const UserNavbar = () => {
     <nav className="fixed top-0 left-0 w-full bg-gray-800 text-white shadow-md z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-20 items-center">
-          {/* Logo */}
           <div
             className="text-green-400 font-bold text-xl cursor-pointer"
             onClick={() => navigate("/")}
@@ -70,15 +68,17 @@ const UserNavbar = () => {
               </button>
             ))}
 
-            {/* Admin Login */}
-            <button
-              onClick={() => navigate("/admin/login")}
-              className="flex items-center gap-1 hover:text-green-400 transition-colors font-medium"
-            >
-              <FaUserShield /> Admin
-            </button>
+            {/* ✅ Show Admin Option Logic */}
+            {(!user || role === "admin") && (
+              <button
+                onClick={() => navigate("/admin/login")}
+                className="flex items-center gap-1 hover:text-green-400 transition-colors font-medium"
+              >
+                <FaUserShield /> Admin
+              </button>
+            )}
 
-            {/* Conditional User/Login */}
+            {/* ✅ Login/User dropdown */}
             {user ? (
               <div className="relative" ref={dropdownRef}>
                 <button
@@ -112,7 +112,7 @@ const UserNavbar = () => {
             )}
           </div>
 
-          {/* Mobile Menu Toggle */}
+          {/* Mobile Toggle */}
           <div className="sm:hidden">
             <button onClick={() => setMenuOpen(!menuOpen)}>
               {menuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
@@ -121,7 +121,7 @@ const UserNavbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* ✅ Mobile Menu */}
       {menuOpen && (
         <div className="sm:hidden bg-gray-800 px-4 pb-4 space-y-2">
           {navLinks.map((link) => (
@@ -137,18 +137,20 @@ const UserNavbar = () => {
             </button>
           ))}
 
-          {/* Admin Login (Mobile) */}
-          <button
-            onClick={() => {
-              navigate("/admin/login");
-              setMenuOpen(false);
-            }}
-            className="w-full text-left flex items-center gap-2 text-white px-4 py-2 rounded hover:bg-gray-700"
-          >
-            <FaUserShield /> Admin
-          </button>
+          {/* ✅ Admin Option Logic (mobile) */}
+          {(!user || role === "admin") && (
+            <button
+              onClick={() => {
+                navigate("/admin/login");
+                setMenuOpen(false);
+              }}
+              className="w-full text-left flex items-center gap-2 text-white px-4 py-2 rounded hover:bg-gray-700"
+            >
+              <FaUserShield /> Admin
+            </button>
+          )}
 
-          {/* User Section (Mobile) */}
+          {/* ✅ User Section */}
           {user ? (
             <div className="border-t border-gray-700 pt-3">
               <div className="flex items-center gap-3 text-white px-4">
