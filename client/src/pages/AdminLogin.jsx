@@ -3,7 +3,8 @@ import { useAppContext } from "../../src/context/AppContext";
 import toast from "react-hot-toast";
 
 const AdminLogin = () => {
-  const { isAdmin, setIsAdmin, navigate, axios } = useAppContext();
+  const { role, setRole, navigate, axios } = useAppContext();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -13,8 +14,8 @@ const AdminLogin = () => {
       const { data } = await axios.post("/api/admin/login", { email, password });
       if (data.success) {
         toast.success("Welcome back, Admin ");
-        setIsAdmin(true);
-        localStorage.setItem("isAdmin", "true");
+       setRole("admin");
+         localStorage.setItem("role", "admin");
          navigate("/admin/dashboard"); 
       } else {
         toast.error(data.message);
@@ -25,9 +26,10 @@ const AdminLogin = () => {
   };
 
   useEffect(() => {
-    if (isAdmin)  navigate("/admin/dashboard"); 
-  }, [isAdmin]);
-
+  if (role === "admin") {
+    navigate("/admin/dashboard");
+  }
+}, [role]);
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-900 px-4">
       <form

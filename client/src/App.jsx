@@ -24,6 +24,8 @@ import Documents from "./pages/Documents";
 import AdminPortal from "./pages/AdminPortal";
 import Resident from "./pages/Resident";
 import AdminLayout from "./pages/Layout";
+import UserAnnouncements from "./pages/User/UserAnnouncements";
+import AdminAnnouncements from "./pages/AdminAnnouncements";
 
 function AppWrapper() {
   const location = useLocation();
@@ -31,7 +33,7 @@ function AppWrapper() {
     location.pathname.startsWith(path)
   );
 
-  const { isAdmin,loading } = useAppContext();
+  const { role ,loading } = useAppContext();
 
   return (
     <div className="text-default min-h-screen text-gray-700 w-screen overflow-x-hidden">
@@ -53,33 +55,35 @@ function AppWrapper() {
           <Route path="/login" element={<Login />} />
           <Route path="/user-maintenance" element={<UserMaintenance />} />
           <Route path="/user-documents" element={<UserDocuments />} />
+           <Route path="/user-announcements" element={<UserAnnouncements />} />
+
 
           <Route path="/admin/login" element={<AdminLogin />} />
 
-          const { isAdmin, loading } = useAppContext();
+          const { role, loading } = useAppContext();
 
 <Route
   path="/admin/*"
   element={
     loading ? (
       <div className="text-center text-white mt-20">Checking authentication...</div>
-    ) : isAdmin ? (
+    ) : role === "admin" ? (
       <AdminLayout />
     ) : (
       <Navigate to="/admin/login" replace />
     )
   }
 >
+  <Route index element={<AdminDashboard />} />
+  <Route path="dashboard" element={<AdminDashboard />} />
+  <Route path="visitor-management" element={<VisitorManagement />} />
+  <Route path="maintenance" element={<Maintenance />} />
+  <Route path="documents" element={<Documents />} />
+  <Route path="announcements" element={<AdminAnnouncements />} />
+  <Route path="admin-portal" element={<AdminPortal />} />
+  <Route path="residents" element={<Resident />} />
+</Route>
 
-
-            <Route index element={<AdminDashboard />} />
-            <Route path="dashboard" element={<AdminDashboard />} />
-            <Route path="visitor-management" element={<VisitorManagement />} />
-            <Route path="maintenance" element={<Maintenance />} />
-            <Route path="documents" element={<Documents />} />
-            <Route path="admin-portal" element={<AdminPortal />} />
-            <Route path="residents" element={<Resident />} />
-          </Route>
         </Routes>
       </div>
 

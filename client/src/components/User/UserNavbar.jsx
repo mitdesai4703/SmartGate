@@ -7,6 +7,7 @@ import {
   FaFileAlt,
   FaUserShield,
   FaSignOutAlt,
+  FaBullhorn,
 } from "react-icons/fa";
 import { useAppContext } from "../../context/AppContext";
 
@@ -43,6 +44,8 @@ const UserNavbar = () => {
     { name: "Home", path: "/" },
     { name: "Maintenance", path: "/user-maintenance", icon: <FaTools /> },
     { name: "Documents", path: "/user-documents", icon: <FaFileAlt /> },
+    { name: "Announcements", path: "/user-announcements", icon: <FaBullhorn /> },
+
   ];
 
   return (

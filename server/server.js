@@ -8,6 +8,7 @@ import taskRouter from "./routes/taskRoutes.js"
 import documentRouter from "./routes/documentRoutes.js"
 import visitorRouter from "./routes/visitorRoutes.js";
 import residentRouter from "./routes/residentRoutes.js";
+import announcementRouter from "./routes/announcementRoutes.js";
 
 dotenv.config();
 
@@ -35,6 +36,7 @@ app.use("/uploads", express.static("uploads"));
 app.use('/api/documents',documentRouter);
 app.use("/api/visitors", visitorRouter);
 app.use("/api/residents", residentRouter);
+app.use("/api/announcements", announcementRouter);
 
 
 

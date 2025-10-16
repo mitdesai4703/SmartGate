@@ -8,6 +8,7 @@ import {
   FaUserShield,
   FaBars,
   FaTimes,
+  FaBullhorn,
 } from "react-icons/fa";
 
 const Sidebar = () => {
@@ -100,6 +101,18 @@ const Sidebar = () => {
           >
             <FaUserShield />
             <span>Admin Portal</span>
+          </NavLink>
+
+          <NavLink
+            to="/admin/announcements"
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-4 py-2 rounded hover:bg-gray-700 ${
+                isActive ? "bg-gray-700" : ""
+              }`
+            }
+          >
+            <FaBullhorn/>
+            <span>Announcements</span>
           </NavLink>
         </nav>
       </div>
