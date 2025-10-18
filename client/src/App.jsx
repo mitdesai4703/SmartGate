@@ -26,6 +26,8 @@ import Resident from "./pages/Resident";
 import AdminLayout from "./pages/Layout";
 import UserAnnouncements from "./pages/User/UserAnnouncements";
 import AdminAnnouncements from "./pages/AdminAnnouncements";
+import ContactUs from "./pages/ContactUs";
+import AdminComplaints from "./pages/AdminComplaints";
 
 function AppWrapper() {
   const location = useLocation();
@@ -56,6 +58,7 @@ function AppWrapper() {
           <Route path="/user-maintenance" element={<UserMaintenance />} />
           <Route path="/user-documents" element={<UserDocuments />} />
            <Route path="/user-announcements" element={<UserAnnouncements />} />
+            <Route path="contactus" element={<ContactUs />} />
 
 
           <Route path="/admin/login" element={<AdminLogin />} />
@@ -82,6 +85,8 @@ function AppWrapper() {
   <Route path="announcements" element={<AdminAnnouncements />} />
   <Route path="admin-portal" element={<AdminPortal />} />
   <Route path="residents" element={<Resident />} />
+  <Route path="admincomplaints" element={<AdminComplaints />} />
+  
 </Route>
 
         </Routes>

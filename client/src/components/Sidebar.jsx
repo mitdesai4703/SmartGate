@@ -9,6 +9,7 @@ import {
   FaBars,
   FaTimes,
   FaBullhorn,
+  FaExclamationCircle, 
 } from "react-icons/fa";
 
 const Sidebar = () => {
@@ -16,7 +17,7 @@ const Sidebar = () => {
 
   return (
     <>
-      {/* Mobile Header */}
+     
       <div className="md:hidden flex items-center justify-between bg-gray-800 text-white p-4">
         <h3 className="text-xl font-bold">SmartGate</h3>
         <button onClick={() => setIsOpen(!isOpen)}>
@@ -24,7 +25,7 @@ const Sidebar = () => {
         </button>
       </div>
 
-      {/* Sidebar */}
+     
       <div
         className={`
           fixed top-0 left-0 h-full bg-gray-800 text-white p-5 
@@ -90,18 +91,7 @@ const Sidebar = () => {
             <span>Documents</span>
           </NavLink>
 
-          <NavLink
-            to="/admin/admin-portal"
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-2 rounded hover:bg-gray-700 ${
-                isActive ? "bg-gray-700" : ""
-              }`
-            }
-            onClick={() => setIsOpen(false)}
-          >
-            <FaUserShield />
-            <span>Admin Portal</span>
-          </NavLink>
+         
 
           <NavLink
             to="/admin/announcements"
@@ -111,13 +101,26 @@ const Sidebar = () => {
               }`
             }
           >
-            <FaBullhorn/>
+            <FaBullhorn />
             <span>Announcements</span>
+          </NavLink>
+
+         
+          <NavLink
+            to="/admin/admincomplaints"
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-4 py-2 rounded hover:bg-gray-700 ${
+                isActive ? "bg-gray-700" : ""
+              }`
+            }
+          >
+            <FaExclamationCircle />
+            <span>Complaints</span>
           </NavLink>
         </nav>
       </div>
 
-      {/* Overlay for mobile */}
+    
       {isOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-40 md:hidden"

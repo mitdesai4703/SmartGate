@@ -6,6 +6,7 @@ import HowItWorksSection from "../components/UserHome/HowItWorksSection";
 import TestimonialsSection from "../components/UserHome/TestimonialsSection";
 import ContactSection from "../components/UserHome/ContactSection";
 import Footer from "../components/Footer";
+import AnnouncementPreview from "../components/UserHome/AnnouncementPreview";
 
 
 const Home = () => {
@@ -13,6 +14,7 @@ const Home = () => {
     <div className="flex flex-col min-h-screen">
       <Navbar/>
       <HeroSection/>
+      <AnnouncementPreview/>
       <FeaturesSection/>
       <HowItWorksSection/>
       <TestimonialsSection/>

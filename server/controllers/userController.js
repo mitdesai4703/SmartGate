@@ -84,6 +84,16 @@ export const isAuth = async (req, res) => {
 };
 
 
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find().select("name email"); 
+    res.json({ success: true, users });
+  } catch (error) {
+    console.error(error.message);
+    res.json({ success: false, message: error.message });
+  }
+};
+
 
 export const logout = async (req, res)=>{
     try {

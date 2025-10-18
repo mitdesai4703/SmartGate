@@ -1,150 +1,151 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { FaPlus, FaTrashAlt } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 const UserMaintenance = () => {
-  const [requests, setRequests] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [showModal, setShowModal] = useState(false);
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    status: "Pending",
-  });
+  const [tickets, setTickets] = useState([]);
+  const [loadingTickets, setLoadingTickets] = useState(true);
+  const [userName, setUserName] = useState(null);
 
-  const fetchRequests = async () => {
-    try {
-      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/maintenance`);
-      setRequests(res.data);
-      setLoading(false);
-    } catch (err) {
-      console.error(err);
-      setLoading(false);
-    }
-  };
+  const [complaints, setComplaints] = useState([]);
+  const [complaintMsg, setComplaintMsg] = useState("");
+  const [loadingComplaints, setLoadingComplaints] = useState(true);
 
+  
   useEffect(() => {
-    fetchRequests();
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      setUserName(user.name);
+      
+    }
   }, []);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+  
+  useEffect(() => {
+    if (!userName) return;
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/maintenance`, formData);
-      setFormData({ title: "", description: "", status: "Pending" });
-      setShowModal(false);
-      fetchRequests();
-    } catch (err) {
-      console.error(err);
-    }
-  };
+    const fetchTickets = async () => {
+      try {
+        const res = await axios.get(`/api/maintenance?userName=${userName}`);
+        setTickets(res.data);
+      } catch (err) {
+        console.error(err);
+        setTickets([]);
+      } finally {
+        setLoadingTickets(false);
+      }
+    };
 
-  const deleteRequest = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this request?")) return;
-    try {
-      await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/maintenance/${id}`);
-      fetchRequests();
-    } catch (err) {
-      console.error(err);
-    }
-  };
+    fetchTickets();
+  }, [userName]);
 
-  if (loading) return <p className="text-center mt-10">Loading...</p>;
+ 
+  useEffect(() => {
+    if (!userName) return;
+
+    const fetchComplaints = async () => {
+      try {
+        const res = await axios.get(`/api/complaints?userName=${userName}`);
+        setComplaints(res.data);
+      } catch (err) {
+        console.error(err);
+        setComplaints([]);
+      } finally {
+        setLoadingComplaints(false);
+      }
+    };
+
+    fetchComplaints();
+  }, [userName]);
+
+ 
+  const handleComplaintSubmit = async (e) => {
+  e.preventDefault();
+  if (!complaintMsg.trim()) return toast.error("Complaint cannot be empty");
+
+  try {
+    const res = await axios.post("/api/complaints", {
+      userName,
+      message: complaintMsg,
+    });
+    toast.success("Complaint submitted!");
+    setComplaintMsg("");
+    
+    setComplaints((prev) => [res.data, ...prev]);
+  } catch (err) {
+    console.error(err);
+    toast.error("Failed to submit complaint");
+  }
+};
+
+
+  if (!userName) return <p className="text-green-500 mt-10 mb-70 text-center text-2xl">No user logged in</p>;
+  if (loadingTickets || loadingComplaints) return <p className="text-green-700 mt-10 text-center">Loading...</p>;
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <div className="flex flex-col md:flex-row justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4 md:mb-0">Maintenance Requests</h1>
-        <button
-          onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-lg"
-        >
-          <FaPlus /> Add Request
-        </button>
-      </div>
+    <div className="min-h-screen bg-gray-50 p-6">
+      <h1 className="text-3xl font-bold text-green-700 mb-6">Maintenance Tickets for {userName}</h1>
 
-      <div className="overflow-x-auto bg-white shadow rounded-xl">
-        <table className="min-w-full divide-y divide-gray-200 text-sm">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-4 py-3 text-left font-semibold text-gray-700">Title</th>
-              <th className="px-4 py-3 text-left font-semibold text-gray-700">Description</th>
-              <th className="px-4 py-3 text-left font-semibold text-gray-700">Status</th>
-              <th className="px-4 py-3 text-left font-semibold text-gray-700">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-100">
-            {requests.length === 0 ? (
-              <tr>
-                <td colSpan="4" className="text-center py-10 text-gray-500">No maintenance requests found.</td>
-              </tr>
-            ) : (
-              requests.map((req) => (
-                <tr key={req._id} className="hover:bg-gray-50 transition">
-                  <td className="px-4 py-2">{req.title}</td>
-                  <td className="px-4 py-2">{req.description}</td>
-                  <td className="px-4 py-2">{req.status}</td>
-                  <td className="px-4 py-2 flex gap-2">
-                    <button
-                      onClick={() => deleteRequest(req._id)}
-                      className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded flex items-center gap-1 text-xs"
-                    >
-                      <FaTrashAlt /> Delete
-                    </button>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-6">
-            <h2 className="text-2xl font-bold mb-4">Add Maintenance Request</h2>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-              <input
-                type="text"
-                name="title"
-                placeholder="Title"
-                value={formData.title}
-                onChange={handleChange}
-                required
-                className="border rounded-lg p-2"
-              />
-              <textarea
-                name="description"
-                placeholder="Description"
-                value={formData.description}
-                onChange={handleChange}
-                required
-                className="border rounded-lg p-2"
-              />
-              <div className="flex justify-end gap-3 mt-4">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded-lg"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg"
-                >
-                  Add
-                </button>
-              </div>
-            </form>
-          </div>
+     
+      {tickets.length === 0 ? (
+        <p className="text-gray-600 mb-6">No maintenance tickets found.</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+          {tickets.map((ticket) => (
+            <div
+              key={ticket._id}
+              className="bg-white rounded-lg shadow p-4 border-l-4 border-green-600 hover:shadow-lg transition-shadow"
+            >
+              <p className="font-semibold text-green-700 mb-2">{ticket.description || "Maintenance Ticket"}</p>
+              <p><strong>Amount:</strong> ₹{ticket.amount}</p>
+              <p><strong>Due Date:</strong> {new Date(ticket.dueDate).toLocaleDateString()}</p>
+              <p>
+                <strong>Status:</strong>{" "}
+                <span className={ticket.status === "Paid" ? "text-green-600 font-semibold" : "text-red-500 font-semibold"}>
+                  {ticket.status}
+                </span>
+              </p>
+            </div>
+          ))}
         </div>
       )}
+
+     
+      <div className="bg-white rounded-lg shadow p-6 mb-6">
+        <h2 className="text-2xl font-bold text-gray-700 mb-4">Raise a Complaint</h2>
+        <form onSubmit={handleComplaintSubmit} className="mb-4">
+          <textarea
+            className="w-full p-3 border rounded-lg mb-2"
+            rows={4}
+            placeholder="Write your complaint here..."
+            value={complaintMsg}
+            onChange={(e) => setComplaintMsg(e.target.value)}
+          />
+          <button
+            type="submit"
+            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-400 transition"
+          >
+            Submit Complaint
+          </button>
+        </form>
+
+        <h3 className="text-xl font-semibold text-gray-700 mb-2">Your Complaints</h3>
+        {complaints.length === 0 ? (
+          <p className="text-gray-600">No complaints raised yet.</p>
+        ) : (
+          <ul className="divide-y divide-gray-200">
+            {complaints.map((c, i) => (
+              <li key={i} className="py-2">
+                <p className="text-gray-700">{c.message}</p>
+                <p className="text-sm text-gray-500">
+                  Status: <span className={c.status === "Resolved" ? "text-green-600" : "text-red-500"}>{c.status}</span> | {new Date(c.createdAt).toLocaleDateString()}
+                </p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 };

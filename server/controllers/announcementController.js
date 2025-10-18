@@ -1,6 +1,5 @@
 import Announcement from "../models/Announcement.js";
 
-// Create announcement
 export const createAnnouncement = async (req, res) => {
   try {
     console.log("Received POST /api/announcements:", req.body);
@@ -27,7 +26,6 @@ export const createAnnouncement = async (req, res) => {
   }
 };
 
-// Get all announcements
 export const getAnnouncements = async (req, res) => {
   try {
     const announcements = await Announcement.find().sort({ createdAt: -1 });
@@ -38,7 +36,6 @@ export const getAnnouncements = async (req, res) => {
   }
 };
 
-// Delete announcement
 export const deleteAnnouncement = async (req, res) => {
   try {
     const { id } = req.params;
@@ -50,7 +47,9 @@ export const deleteAnnouncement = async (req, res) => {
     const deleted = await Announcement.findByIdAndDelete(id);
 
     if (!deleted) {
-      return res.status(404).json({ success: false, error: "Announcement not found" });
+      return res
+        .status(404)
+        .json({ success: false, error: "Announcement not found" });
     }
 
     res.status(200).json({ success: true, message: "Announcement deleted" });

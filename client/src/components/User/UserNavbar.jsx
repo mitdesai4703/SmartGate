@@ -8,12 +8,13 @@ import {
   FaUserShield,
   FaSignOutAlt,
   FaBullhorn,
+  FaEnvelope,
 } from "react-icons/fa";
 import { useAppContext } from "../../context/AppContext";
 
 const UserNavbar = () => {
   const navigate = useNavigate();
-  const { role } = useAppContext(); // ✅ access role (user/admin)
+  const { role } = useAppContext();
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [user, setUser] = useState(null);
@@ -21,7 +22,10 @@ const UserNavbar = () => {
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
-    if (storedUser) setUser(JSON.parse(storedUser));
+    if (storedUser) {
+      const userData = JSON.parse(storedUser);
+      setUser(userData);
+    }
   }, []);
 
   useEffect(() => {
@@ -44,8 +48,12 @@ const UserNavbar = () => {
     { name: "Home", path: "/" },
     { name: "Maintenance", path: "/user-maintenance", icon: <FaTools /> },
     { name: "Documents", path: "/user-documents", icon: <FaFileAlt /> },
-    { name: "Announcements", path: "/user-announcements", icon: <FaBullhorn /> },
-
+    {
+      name: "Announcements",
+      path: "/user-announcements",
+      icon: <FaBullhorn />,
+    },
+    { name: "Contact Us", path: "/contactus", icon: <FaEnvelope /> },
   ];
 
   return (
@@ -59,7 +67,6 @@ const UserNavbar = () => {
             SmartGate
           </div>
 
-          {/* Desktop Menu */}
           <div className="hidden sm:flex sm:items-center gap-6">
             {navLinks.map((link) => (
               <button
@@ -71,8 +78,7 @@ const UserNavbar = () => {
               </button>
             ))}
 
-            {/* ✅ Show Admin Option Logic */}
-            {(!user || role === "admin") && (
+            {(!user || user?.role === "admin") && (
               <button
                 onClick={() => navigate("/admin/login")}
                 className="flex items-center gap-1 hover:text-green-400 transition-colors font-medium"
@@ -81,7 +87,6 @@ const UserNavbar = () => {
               </button>
             )}
 
-            {/* ✅ Login/User dropdown */}
             {user ? (
               <div className="relative" ref={dropdownRef}>
                 <button
@@ -94,7 +99,7 @@ const UserNavbar = () => {
                 {dropdownOpen && (
                   <div className="absolute right-0 mt-2 w-40 bg-white text-gray-800 rounded-lg shadow-lg overflow-hidden">
                     <div className="px-4 py-2 font-medium border-b">
-                      {user.name}
+                      {user.name || "User"}
                     </div>
                     <button
                       onClick={handleLogout}
@@ -115,7 +120,6 @@ const UserNavbar = () => {
             )}
           </div>
 
-          {/* Mobile Toggle */}
           <div className="sm:hidden">
             <button onClick={() => setMenuOpen(!menuOpen)}>
               {menuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
@@ -124,7 +128,6 @@ const UserNavbar = () => {
         </div>
       </div>
 
-      {/* ✅ Mobile Menu */}
       {menuOpen && (
         <div className="sm:hidden bg-gray-800 px-4 pb-4 space-y-2">
           {navLinks.map((link) => (
@@ -140,8 +143,7 @@ const UserNavbar = () => {
             </button>
           ))}
 
-          {/* ✅ Admin Option Logic (mobile) */}
-          {(!user || role === "admin") && (
+          {(!user || user?.role === "admin") && (
             <button
               onClick={() => {
                 navigate("/admin/login");
@@ -153,7 +155,6 @@ const UserNavbar = () => {
             </button>
           )}
 
-          {/* ✅ User Section */}
           {user ? (
             <div className="border-t border-gray-700 pt-3">
               <div className="flex items-center gap-3 text-white px-4">

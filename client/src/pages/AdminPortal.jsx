@@ -28,7 +28,7 @@ const modules = [
     title: "Complaints",
     description: "Track and manage resident complaints and maintenance requests efficiently.",
     icon: <FaComments className="text-blue-500 text-4xl" />,
-    path: "/maintenance",
+    path: "/admin/admincomplaints",
     button: "Manage Complaints",
   },
 ];
